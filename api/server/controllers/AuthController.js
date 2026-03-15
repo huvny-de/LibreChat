@@ -136,13 +136,54 @@ const refreshController = async (req, res) => {
   /** For non-OpenID users, read refresh token from cookies */
   const refreshToken = parsedCookies.refreshToken;
   if (!refreshToken) {
+    if (isEnabled(process.env.ALLOW_UNAUTH_ACCESS)) {
+      try {
+        const anonEmail = process.env.ANON_USER_EMAIL;
+        const defaultUser = anonEmail
+          ? await findUser({ email: anonEmail })
+          : await findUser({});
+        if (defaultUser) {
+          const token = await setAuthTokens(defaultUser._id, res);
+          const { password: _p, totpSecret: _t, __v, ...safeUser } = defaultUser;
+          safeUser.id = defaultUser._id.toString();
+          return res.status(200).send({ token, user: safeUser });
+        }
+      } catch (err) {
+        logger.error('[refreshController] Auto-login error:', err);
+      }
+    }
     return res.status(200).send('Refresh token not provided');
   }
+
+  const unauthFallback = async () => {
+    if (!isEnabled(process.env.ALLOW_UNAUTH_ACCESS)) {
+      return false;
+    }
+    try {
+      const anonEmail = process.env.ANON_USER_EMAIL;
+      const defaultUser = anonEmail ? await findUser({ email: anonEmail }) : await findUser({});
+      if (!defaultUser) {
+        return false;
+      }
+      res.clearCookie('refreshToken');
+      const token = await setAuthTokens(defaultUser._id, res);
+      const { password: _p, totpSecret: _t, __v, ...safeUser } = defaultUser;
+      safeUser.id = defaultUser._id.toString();
+      res.status(200).send({ token, user: safeUser });
+      return true;
+    } catch (err) {
+      logger.error('[refreshController] Auto-login fallback error:', err);
+      return false;
+    }
+  };
 
   try {
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
     const user = await getUserById(payload.id, '-password -__v -totpSecret -backupCodes');
     if (!user) {
+      if (await unauthFallback()) {
+        return;
+      }
       return res.status(401).redirect('/login');
     }
 
@@ -164,18 +205,25 @@ const refreshController = async (req, res) => {
 
     if (session && session.expiration > new Date()) {
       const token = await setAuthTokens(userId, res, session);
-
       res.status(200).send({ token, user });
     } else if (req?.query?.retry) {
-      // Retrying from a refresh token request that failed (401)
       res.status(403).send('No session found');
     } else if (payload.exp < Date.now() / 1000) {
+      if (await unauthFallback()) {
+        return;
+      }
       res.status(403).redirect('/login');
     } else {
+      if (await unauthFallback()) {
+        return;
+      }
       res.status(401).send('Refresh token expired or not found for this user');
     }
   } catch (err) {
     logger.error(`[refreshController] Invalid refresh token:`, err);
+    if (await unauthFallback()) {
+      return;
+    }
     res.status(403).send('Invalid refresh token');
   }
 };

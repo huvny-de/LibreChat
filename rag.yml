@@ -13,19 +13,30 @@ services:
       - "5433:5432"
 
   rag_api:
-    image: registry.librechat.ai/danny-avila/librechat-rag-api-dev:latest
+    image: registry.librechat.ai/danny-avila/librechat-rag-api-dev-lite:latest
     environment:
       - DB_HOST=vectordb
       - DB_PORT=5432
       - POSTGRES_DB=mydatabase
       - POSTGRES_USER=myuser
       - POSTGRES_PASSWORD=mypassword
+      - EMBEDDINGS_PROVIDER=openai
+      - EMBEDDINGS_MODEL=nvidia/llama-nemotron-embed-vl-1b-v2:free
+      - RAG_OPENAI_API_KEY=${OPENROUTER_KEY}
+      - RAG_OPENAI_BASEURL=https://openrouter.ai/api/v1
+      - RAG_CHECK_EMBEDDING_CTX_LENGTH=false
     ports:
       - "${RAG_PORT}:${RAG_PORT}"
     depends_on:
       - vectordb
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
 
 volumes:
   pgdata2:

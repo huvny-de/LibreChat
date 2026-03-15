@@ -41,15 +41,16 @@ export default function Message(props: TMessageProps) {
   const fontSize = useAtomValue(fontSizeAtom);
   const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
   const { children, messageId = null, isCreatedByUser } = message ?? {};
+  const siggy = 'Siggy';
 
   const name = useMemo(() => {
     let result = '';
     if (isCreatedByUser === true) {
       result = localize('com_user_message');
     } else if (assistant) {
-      result = assistant.name ?? localize('com_ui_assistant');
+      result = siggy ?? localize('com_ui_assistant');
     } else if (agent) {
-      result = agent.name ?? localize('com_ui_agent');
+      result = siggy ?? localize('com_ui_agent');
     }
 
     return result;

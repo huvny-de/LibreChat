@@ -1,4 +1,4 @@
-# Please consult our docs for more info: https://www.librechat.ai/docs/configuration/docker_override
+`# Please consult our docs for more info: https://www.librechat.ai/docs/configuration/docker_override
 
 # TO USE THIS FILE, FIRST UNCOMMENT THE LINE ('services:')
 
