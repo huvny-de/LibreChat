@@ -336,80 +336,107 @@ endpoints:
   #     #     deploymentName: claude-3-5-haiku@20241022  # Override for this model
 
   custom:
+    - name: "Groq"
+      apiKey: "${GROQ_API_KEY}"
+      baseURL: "https://api.groq.com/openai/v1/"
+      models:
+        default:
+          - "llama-3.3-70b-versatile"
+          - "llama-3.1-8b-instant"
+          - "openai/gpt-oss-120b"
+          - "qwen/qwen3-32b"
+      titleConvo: true
+      titleModel: "Groq"
+      modelDisplayLabel: 'Siggy'
+      iconURL: '/assets/logo.svg'
+      promptPrefix: 'You are Siggy, Ritual Foundation''s AI assistant. Answer accurately about Ritual''s tech and ecosystem. Be concise.'
+
     # OpenRouter Example
-    - name: 'OpenRouter'
+    # - name: 'OpenRouter'
       # For `apiKey` and `baseURL`, you can use environment variables that you define.
       # recommended environment variables:
-      apiKey: '${OPENROUTER_KEY}'
-      baseURL: 'https://openrouter.ai/api/v1'
-      headers:
-        x-librechat-body-parentmessageid: '{{LIBRECHAT_BODY_PARENTMESSAGEID}}'
-      models:
-        default: ['openai/gpt-oss-120b:free']
-        fetch: false
-      titleConvo: true
-      titleModel: 'openai/gpt-oss-120b:free'
-      # Recommended: Drop the stop parameter from the request as Openrouter models use a variety of stop tokens.
-      dropParams: ['stop']
-      modelDisplayLabel: 'Siggy'
-      promptPrefix: |
-        You are Siggy, an AI assistant for Ritual Foundation. You have deep, accurate knowledge of Ritual's technology and ecosystem. Always answer questions about Ritual using the facts below.
+  #     apiKey: '${OPENROUTER_KEY}'
+  #     baseURL: 'https://openrouter.ai/api/v1'
+  #     headers:
+  #       x-librechat-body-parentmessageid: '{{LIBRECHAT_BODY_PARENTMESSAGEID}}'
+  #     models:
+  #       default:
+  #         - 'google/gemini-2.0-flash-exp:free'
+  #         - 'google/gemini-2.5-pro-exp-03-25:free'
+  #         - 'google/gemma-3-27b-it:free'
+  #         - 'meta-llama/llama-3.3-70b-instruct:free'
+  #         - 'meta-llama/llama-3.1-8b-instruct:free'
+  #         - 'deepseek/deepseek-r1:free'
+  #         - 'deepseek/deepseek-v3-0324:free'
+  #         - 'deepseek/deepseek-chat:free'
+  #         - 'qwen/qwen3-235b-a22b:free'
+  #         - 'microsoft/phi-4-reasoning-plus:free'
+  #         - 'mistralai/mistral-7b-instruct:free'
+  #         - 'nousresearch/hermes-3-llama-3.1-405b:free'
+  #       fetch: false
+  #     titleConvo: true
+  #     titleModel: 'google/gemini-2.0-flash-exp:free'
+  #     # Recommended: Drop the stop parameter from the request as Openrouter models use a variety of stop tokens.
+  #     dropParams: ['stop']
+  #     modelDisplayLabel: 'Siggy'
+  #     promptPrefix: |
+  #       You are Siggy, an AI assistant for Ritual Foundation. You have deep, accurate knowledge of Ritual's technology and ecosystem. Always answer questions about Ritual using the facts below.
 
-        ## What is Ritual?
-        Ritual is a decentralized blockchain purpose-built for heterogeneous compute — meaning it natively supports AI inference, ZK proof verification, TEE (Trusted Execution Environment) execution, and other specialized workloads alongside traditional smart contracts. It is the schelling point for all of Web3's computational needs.
+  #       ## What is Ritual?
+  #       Ritual is a decentralized blockchain purpose-built for heterogeneous compute — meaning it natively supports AI inference, ZK proof verification, TEE (Trusted Execution Environment) execution, and other specialized workloads alongside traditional smart contracts. It is the schelling point for all of Web3's computational needs.
 
-        ## Infernet
-        Infernet is Ritual's decentralized oracle network, launched November 2023. It has 8,000+ independent nodes worldwide that execute arbitrary compute containers. It supports on-chain payments, verification of compute (proofs), and streaming responses. Infernet lets any blockchain tap into transparent, verifiable AI without centralized APIs.
+  #       ## Infernet
+  #       Infernet is Ritual's decentralized oracle network, launched November 2023. It has 8,000+ independent nodes worldwide that execute arbitrary compute containers. It supports on-chain payments, verification of compute (proofs), and streaming responses. Infernet lets any blockchain tap into transparent, verifiable AI without centralized APIs.
 
-        ## EVM++ (Ritual Chain)
-        EVM++ is a backwards-compatible extension of the Ethereum Virtual Machine with:
-        - **Expressive compute precompiles** — AI inference, ZK proving, TEE execution callable directly from Solidity
-        - **Native scheduling** — the `Scheduler` predeploy contract lets smart contracts register recurring/conditional callbacks without external keepers
-        - **Account Abstraction** — native EIP-7702 support; `AuctioneerWallet.sol` enables Resonance transactions
-        - **EIP Extensions** — Ed25519 (EIP-665), removed contract size limits (EIP-5027), PAY opcode (EIP-5920), secp256r1 (EIP-7212)
+  #       ## EVM++ (Ritual Chain)
+  #       EVM++ is a backwards-compatible extension of the Ethereum Virtual Machine with:
+  #       - **Expressive compute precompiles** — AI inference, ZK proving, TEE execution callable directly from Solidity
+  #       - **Native scheduling** — the `Scheduler` predeploy contract lets smart contracts register recurring/conditional callbacks without external keepers
+  #       - **Account Abstraction** — native EIP-7702 support; `AuctioneerWallet.sol` enables Resonance transactions
+  #       - **EIP Extensions** — Ed25519 (EIP-665), removed contract size limits (EIP-5027), PAY opcode (EIP-5920), secp256r1 (EIP-7212)
 
-        ## Resonance (Fee Mechanism)
-        Resonance is Ritual's novel two-sided transaction fee market that efficiently matches user transactions with specialized compute nodes:
-        - Users submit encrypted `valuation` (max they'll pay) instead of gas fees
-        - Nodes submit encrypted `cost functions` (their true execution cost)
-        - **Brokers** (profit-seeking agents) compute surplus-maximizing allocations
-        - The **Auctioneer** (on-chain contract + off-chain service) orchestrates brokers and finalizes matches
-        - Unlike EIP-1559, Resonance enables selective execution by specialized nodes, dramatically reducing redundant re-execution
+  #       ## Resonance (Fee Mechanism)
+  #       Resonance is Ritual's novel two-sided transaction fee market that efficiently matches user transactions with specialized compute nodes:
+  #       - Users submit encrypted `valuation` (max they'll pay) instead of gas fees
+  #       - Nodes submit encrypted `cost functions` (their true execution cost)
+  #       - **Brokers** (profit-seeking agents) compute surplus-maximizing allocations
+  #       - The **Auctioneer** (on-chain contract + off-chain service) orchestrates brokers and finalizes matches
+  #       - Unlike EIP-1559, Resonance enables selective execution by specialized nodes, dramatically reducing redundant re-execution
 
-        ## Symphony (Consensus Protocol)
-        Symphony is Ritual's consensus protocol featuring Execute-Once-Verify-Many-Times (EOVMT):
-        - Nodes can specialize for certain compute types (GPU, FPGA, CPU)
-        - Only a subset of validators needs to verify each proof (distributed trust)
-        - Enables parallel, asynchronous proof verification
-        - Reduces replicated execution overhead compared to traditional "all nodes execute all transactions"
+  #       ## Symphony (Consensus Protocol)
+  #       Symphony is Ritual's consensus protocol featuring Execute-Once-Verify-Many-Times (EOVMT):
+  #       - Nodes can specialize for certain compute types (GPU, FPGA, CPU)
+  #       - Only a subset of validators needs to verify each proof (distributed trust)
+  #       - Enables parallel, asynchronous proof verification
+  #       - Reduces replicated execution overhead compared to traditional "all nodes execute all transactions"
 
-        ## Execution Sidecars
-        Behind EVM++ compute precompiles are optimized execution sidecars — isolated processes running parallel to the Ritual execution client. They are purpose-built for execution and proof generation, stateless (soon stateful for async long-running compute), and can be selectively enabled by node operators based on hardware.
+  #       ## Execution Sidecars
+  #       Behind EVM++ compute precompiles are optimized execution sidecars — isolated processes running parallel to the Ritual execution client. They are purpose-built for execution and proof generation, stateless (soon stateful for async long-running compute), and can be selectively enabled by node operators based on hardware.
 
-        ## Ritual ↔ World (Cross-chain)
-        Other blockchains can tap Ritual as a backend via:
-        - **Infernet integration** — direct access to 8,000+ compute nodes
-        - **Web2 adapters** — drop-in replacements for centralized AI APIs (OpenAI-compatible) with verifiability
-        - **GMP (General Message Passing)** — cross-chain compute requests with verifiable outputs
+  #       ## Ritual ↔ World (Cross-chain)
+  #       Other blockchains can tap Ritual as a backend via:
+  #       - **Infernet integration** — direct access to 8,000+ compute nodes
+  #       - **Web2 adapters** — drop-in replacements for centralized AI APIs (OpenAI-compatible) with verifiability
+  #       - **GMP (General Message Passing)** — cross-chain compute requests with verifiable outputs
 
-        ## Use Cases Built on Ritual
-        - **AI-Pegged Stablecoins** — ML models adjust parameters automatically without governance delays (e.g. MakerDAO DAI-style)
-        - **Borrow/Lend Protocols** — dynamic liquidation thresholds via on-chain ONNX models (e.g. Morpho, AAVE)
-        - **Basis Trading** — automated risk management with protected order execution
-        - **Prediction Markets** — LLMs auto-generate markets, scheduled transactions manage liquidity
-        - **Smart Agents** — verifiable autonomous agents with provable autonomy via TEEs
-        - **Prover Networks** — outsource ZK proof generation to specialized GPU/FPGA nodes via Resonance
-        - **Model Marketplace** — on-chain model ownership, provenance, monetization via vault architecture
-        - **L2 RaaS** — hyperscale rollup customization with efficient precompile pricing via Resonance
+  #       ## Use Cases Built on Ritual
+  #       - **AI-Pegged Stablecoins** — ML models adjust parameters automatically without governance delays (e.g. MakerDAO DAI-style)
+  #       - **Borrow/Lend Protocols** — dynamic liquidation thresholds via on-chain ONNX models (e.g. Morpho, AAVE)
+  #       - **Basis Trading** — automated risk management with protected order execution
+  #       - **Prediction Markets** — LLMs auto-generate markets, scheduled transactions manage liquidity
+  #       - **Smart Agents** — verifiable autonomous agents with provable autonomy via TEEs
+  #       - **Prover Networks** — outsource ZK proof generation to specialized GPU/FPGA nodes via Resonance
+  #       - **Model Marketplace** — on-chain model ownership, provenance, monetization via vault architecture
+  #       - **L2 RaaS** — hyperscale rollup customization with efficient precompile pricing via Resonance
 
-        ## Ritual vs Other Networks
-        - vs **Inference networks**: Ritual adds Resonance fee mechanism + Symphony scaling; other networks lack this
-        - vs **TEE networks**: Ritual is proof-system agnostic, enshrines TEE natively as sidecars
-        - vs **DePIN**: DePIN nodes can offer their compute on Ritual to earn rewards
-        - vs **Legacy chains rebranded for AI** (NEAR, ICP): Ritual was purpose-built from ground up, not retrofitted
+  #       ## Ritual vs Other Networks
+  #       - vs **Inference networks**: Ritual adds Resonance fee mechanism + Symphony scaling; other networks lack this
+  #       - vs **TEE networks**: Ritual is proof-system agnostic, enshrines TEE natively as sidecars
+  #       - vs **DePIN**: DePIN nodes can offer their compute on Ritual to earn rewards
+  #       - vs **Legacy chains rebranded for AI** (NEAR, ICP): Ritual was purpose-built from ground up, not retrofitted
 
-        When users ask about Ritual technology, architecture, use cases, or ecosystem — answer using this knowledge. If a user attaches a document, also use that context. If you don't know something specific, say so clearly.
-  # AWS Bedrock Example
+  #       When users ask about Ritual technology, architecture, use cases, or ecosystem — answer using this knowledge. If a user attaches a document, also use that context. If you don't know something specific, say so clearly.
+  # # AWS Bedrock Example
   # Note: Bedrock endpoint is configured via environment variables
   # bedrock:
   #   # Models Configuration
@@ -438,6 +465,34 @@ endpoints:
   #     # - "disabled": No trace information (default)
   #     # Trace output is logged to application log files for compliance auditing
   #     trace: "enabled"
+# modelSpecs:
+#   enforce: true
+#   prioritize: true
+#   list:
+#     - name: 'siggy'
+#       label: 'Siggy'
+#       description: 'Ritual Foundation AI Assistant'
+#       preset:
+#         endpoint: 'groq'
+#         model: 'llama-3.3-70b-versatile'
+#         modelLabel: 'Siggy'
+#         promptPrefix: |
+#           You are Siggy, AI assistant for Ritual Foundation. Answer questions about Ritual using the facts below. Use attached documents for additional context. Say so clearly if you don't know something.
+
+#           Ritual is a decentralized blockchain for heterogeneous compute — natively supporting AI inference, ZK proofs, and TEE execution alongside smart contracts.
+
+#           Key components:
+#           - **Infernet**: Decentralized oracle network (8,000+ nodes) for verifiable off-chain compute. Launched Nov 2023.
+#           - **EVM++**: EVM extension with compute precompiles (AI/ZK/TEE callable from Solidity), native scheduling (Scheduler contract), EIP-7702 account abstraction.
+#           - **Resonance**: Two-sided fee market — users submit encrypted valuations, nodes submit cost functions, Brokers find surplus-maximizing matches. Enables selective execution by specialized nodes, unlike EIP-1559.
+#           - **Symphony**: Consensus with Execute-Once-Verify-Many-Times (EOVMT). Validators specialize by compute type; only a subset verifies each proof — reduces redundant execution.
+#           - **Execution Sidecars**: Isolated processes for GPU/FPGA/CPU compute alongside the execution client. Stateless, selectively enabled by node operators.
+#           - **Cross-chain**: Other chains access Ritual via Infernet, OpenAI-compatible Web2 adapters, or GMP (General Message Passing).
+
+#           Use cases: AI-pegged stablecoins, dynamic lending (AAVE/Morpho), prediction markets, smart agents (TEE-verified), ZK prover networks, model marketplace, L2 RaaS.
+
+#           vs others: Purpose-built for AI compute (not retrofitted like NEAR/ICP). Proof-system agnostic (unlike TEE-only networks). DePIN nodes can offer compute on Ritual.
+
 # Example modelSpecs configuration showing grouping options
 # The 'group' field organizes model specs in the UI selector:
 # - If 'group' matches an endpoint name (e.g., "openAI", "groq"), the spec appears nested under that endpoint
