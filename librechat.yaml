@@ -81,7 +81,7 @@ interface:
       By using the Website, you acknowledge that you have read these Terms of Service and agree to be bound by them.
 
   endpointsMenu: true
-  modelSelect: false
+  modelSelect: true
   parameters: true
   sidePanel: true
   presets: true
@@ -242,6 +242,18 @@ actions:
 #       - -y
 #       - "mcp-obsidian"
 #       - /path/to/obsidian/vault
+
+modelSpecs:
+  enforce: false
+  prioritize: true
+  list:
+    - name: 'siggy'
+      label: 'Siggy'
+      description: 'Ritual Foundation AI Assistant — searches the knowledge base automatically'
+      iconURL: '/assets/logo.svg'
+      preset:
+        endpoint: 'agents'
+        agent_id: 'agent_19cf46532e79b8c4929940f7'
 
 # Definition of custom endpoints
 endpoints:
